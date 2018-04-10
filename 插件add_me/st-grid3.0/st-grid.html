@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Grid组件Demo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/st-grid.css" rel="stylesheet" type="text/css" />
+<style>
+*{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.demo{
+	border:1px solid #eee;
+}
+.note{
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.42857;
+	color: #333333;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.note th, .note td{
+	word-break：break-all;
+	border: 1px solid #dddddd;
+	padding: 8px;
+	line-height: 1.42857;
+}
+pre.code{
+	padding:20px;
+	font-size:8px;
+	background:#ddd;
+	width:100%;
+	word-break: break-all;
+}
+</style>
+<script src="js/jquery.js"></script>
+<script src="js/escape.js"></script>
+<script src="js/st-grid.js"></script>
+<script src="js/st-array.js"></script>
+</head>
+<body>
+	<h1>Grid组件简介</h1>
+	<p>
+		st-grid兼容 IE、FireFox、Chrome、Opera、Safari 等浏览器.
+		支持 JSON 数据,支持响应式设计,支持从服务器或者js函数获取数据,
+		支持静态 和 Ajax异步加载列表数据,支持表头模板、数据区模板及翻页区模板展示,
+		支持极其灵活的渲染数据方式，可以在渲染过程中自由控制渲染的内容,
+		支持自动处理表格数据超长的情况,提供多种事件响应回调,支持表格内的内容编辑,
+		支持表头和数据区的合并单元格,在一个页面内可同时生成多个 Grid 实例,
+		简单的参数配置实现 灵活多变的功能
+	</p>
+	<table>
+		<thead>
+			<tr>
+				<td colspan="3">Grid初始化</td>
+			</tr>
+			<tr>
+				<td>步骤</td>
+				<td>code</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>var grid = Grid.init(options)</td>
+				<td>初始化实例</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>grid.send()||grid.send({pageNo:4,query:{"id":3}})</td>
+				<td>获取数据</td>
+			</tr>
+		</tbody>
+	</table>
+	<table>
+		<thead>
+			<tr>
+				<td colspan="3">options 配置详解</td>
+			</tr>
+			<tr>
+				<td>属性名</td>
+				<td>类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>holder</td>
+				<td>string||element||$element</td>
+				<td>table的引用，可以是字符串的id，dom引用或者jquery引用</td>
+			</tr>
+			<tr>
+				<td>headTemplate</td>
+				<td>string</td>
+				<td>thead部分的模板</td>
+			</tr>
+			<tr>
+				<td>bodyTemplate</td>
+				<td>string</td>
+				<td>填充数据区的模板</td>
+			</tr>
+			<tr>
+				<td>dataSource</td>
+				<td>string||function||array</td>
+				<td>数据源，可以是后台请求的url、function或数据集。当为url时，会把查询参数添加到url；当为function时，会把参数作为对象传入</td>
+			</tr>
+			<tr>
+				<td>nopage</td>
+				<td>boolean</td>
+				<td>不适用分页功能，当设置为true的时候，则不会带分页功能，默认为true</td>
+			</tr>
+			<tr>
+				<td>pageNode</td>
+				<td>string||element||$element</td>
+				<td>当适用分页功能的时候，可以指定一个分页元素，这样可以更灵活的配置分页样式和位置</td>
+			</tr>
+			<tr>
+				<td>sendOnPageSize</td>
+				<td>boolean</td>
+				<td>当页面上有设置pageSize的操作时，当设置pageSize的时候，是否从新发送查询请求，设置为true的时候，会立即发送。默认为false</td>
+			</tr>
+			<tr>
+				<td>noDataMessage</td>
+				<td>string</td>
+				<td>当数据区没有数据的时候，页面上的提示信息，默认为‘没有数据’</td>
+			</tr>
+			<tr>
+				<td>ellipsis</td>
+				<td>string</td>
+				<td>当表格数据超长时的处理，可以指定为‘auto’，针对有超长情况的列的时候，对列进行省略显示，并添加title；‘none’，不处理。默认为auto</td>
+			</tr>
+			<tr>
+				<td>nostripe</td>
+				<td>boolean</td>
+				<td>是否为表格设置斑马线效果和当前行高亮显示效果，默认为true</td>
+			</tr>
+			<tr>
+				<td>pageTemplate</td>
+				<td>string</td>
+				<td>分页模板，如果默认的模板不符合需求，可以传入模板，只要符合第一页按钮有first-page的class，上一页有pre-page的class，下一页有next-page的class，
+	             末页有last-page的class，跳转至指定页面有some-page的class以及设置pageSize的元素有page-size的class即可注册相关事件</td>
+			</tr>
+			<tr>
+				<td>params</td>
+				<td>object</td>
+				<td>发送请求时传递的key-value键值对参数</td>
+			</tr>
+			<tr>
+				<td>orderBy</td>
+				<td>string</td>
+				<td>当需要排序时，设置的排序字段</td>
+			</tr>
+			<tr>
+				<td>order</td>
+				<td>string('asc'|'desc')</td>
+				<td>排序方式</td>
+			</tr>
+			<tr>
+				<td>pageNo</td>
+				<td>number</td>
+				<td>第几页，默认第一页</td>
+			</tr>
+			<tr>
+				<td>pageSize</td>
+				<td>number</td>
+				<td>每页显示多少行数据，默认显示15行</td>
+			</tr>
+			<tr>
+				<td>mapKeys</td>
+				<td>object</td>
+				<td>需要适配器转换的字段，因为有可能后台定义的model字段与Grid组件识别的字段不一致，比如后台用currentPage代表第几页，而Grid用paegNo，这时候，只要设置mapKeys:{pageNo:'currentPage'}即可</td>
+			</tr>
+		</tbody>
+	</table>
+	<table>
+		<thead>
+			<tr>
+				<td colspan="Grid提供的接口"></td>
+			</tr>
+			<tr>
+				<td>接口名</td>
+				<td>参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>send</td>
+				<td>object</td>
+				<td>发送请求数据接口，可以接收object类型的参数，比如：grid.send({pageNo:3})</td>
+			</tr>
+			<tr>
+				<td>destroy</td>
+				<td>void</td>
+				<td>销毁此实例与dom之间的关系，调用此方法之后，不能再用之前的实例获取数据</td>
+			</tr>
+			<tr>
+				<td>init</td>
+				<td>object</td>
+				<td>Grid初始化函数。以options作为参数，options的具体格式请参考options的配置说明</td>
+			</tr>
+			<tr>
+				<td>flatModel</td>
+				<td>void</td>
+				<td>对层级数据进行扁平化处理，参数为层级数据和下级属性名称</td>
+			</tr>
+		</tbody>
+	</table>
+	<table>
+		<thead>
+			<tr>
+				<td colspan="3">Grid事件接口</td>
+			</tr>
+			<tr>
+				<td>事件</td>
+				<td>参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>beforeSend</td>
+				<td>object</td>
+				<td>请求前的拦截接口，可以利用此接口处理些其他逻辑，比如清理下业务数据等等</td>
+			</tr>
+			<tr>
+				<td>modifyModel</td>
+				<td>object</td>
+				<td>当填充body数据的时候，在获取model的数据时，可以对数据进行进一步加工，比如页面有个尺寸字段，而model只有width和height字段，这时候可以设置grid.modifyModel = function(model){model.size = model.width + '*' + model.height;}</td>
+			</tr>
+			<tr>
+				<td>oncolumned</td>
+				<td>td的dom对象,object整个body的数据</td>
+				<td>当每个列的数据生成的时候，会触发此接口，同时把当前dom元素和整体数据作为参数传入</td>
+			</tr>
+			<tr>
+				<td>onrowed</td>
+				<td>tr的dom对象,object整个body的数据</td>
+				<td>当每行数据生成的时候，会触发此接口，同时把当前行dom元素和行数据作为参数传入</td>
+			</tr>
+			<tr>
+				<td>onfilled</td>
+				<td>object ajax返回的数据</td>
+				<td>当这个table的数据渲染完成时，触发此接口，同时把后台返回的数据作为参数传入</td>
+			</tr>
+			<tr>
+				<td>onedited</td>
+				<td>string column标识id,oldValue编辑之前的值,newValue编辑之后的新值</td>
+				<td>当列为编辑模式时，并且对列进行编辑后，会触发此接口，同时把当前node和声明的edit的值作为参数传入</td>
+			</tr>
+			<tr>
+				<td>onerror</td>
+				<td>jquery ajax的error参数一致</td>
+				<td>当load后台数据出错的时候，会触发此函数</td>
+			</tr>
+			<tr>
+				<td>onellipsised</td>
+				<td>单元格dom对象</td>
+				<td>当ellipsis为auto的时候，有列的数据宽度超过列宽的时候，会触发此接口，同时把当前元素作为参数传入</td>
+			</tr>
+		</tbody>
+	</table>
+
+模板说明：
+	head模板支持为th设置属性sort属性，用以支持排序功能；设置styles属性，用以支持为th设置样式，例：styles:"height:30px;width:60px;"。
+	body模板支持为td设置merge和edit属性，用以支持合并和可编辑功能；styles属性的设置同head模板。此模板还实现了序号列功能，只要声明&lt;td&gt;[]&lt;/td&gt;，此列自动标记为序号自增列。
+	head和body模板还有一个功能强大的自定义处理函数，可以通过@加函数名的方式在模板的任何位置进行捕获，同时支持传递参数，并把此函数的返回值追加到指定的位置。
+	一般来讲，只要使用此函数，就可以满足复杂业务处理需求。
+	page模板支持根据class注册对应的事件功能，用户可以根据需要，在模板中只声明需要的按钮，所有的按钮类别class有：page-size（设置每页行数的按钮）、first-page（首页按钮）、pre-page（上页按钮）、
+	next-page（下页按钮）、last-page（末页按钮）和some-page（跳转到指定页输入框）；同时还能支持替换模板中的{pageNo}等信息。按钮的位置完全由模板定义，使用方便。
+</pre> 
+<table class="note" style="width:100%">
+	<caption>st-grid是一个表格渲染器，原生js实现、代码体积小、优异的性能、灵活的配置、多种展示方式是st-grid的最大优点。</caption>
+	<thead>
+		<tr>
+			<th width="20%" colspan="2">Options配置</th>
+			<th>使用说明</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td colspan="2">{holder}</td>
+			<td>（必填）table元素的引用，可以为id字符串、dom对象或者jquery对象。</td>
+		</tr>
+		<tr>
+			<td rowspan="4" style="vertical-align: middle;">tHead部分</td>
+			<td>表头数据组织说明</td>
+			<td>表头的数据可以有三种生成方式：<br />（1）dom方式直接声明。把thead、tr和th全部写在页面上，这只能应用于表头固定的列的情况。为了更好地支持列表展示效果，可以为th添加自定义属性，sort="{column}"，styles="width:100px;height:30px;"。添加之后，列自动支持排序及获得指定的样式。<br />
+				（2）模板（+数据<可选>）方式。可以通过声明tr及th来完成表头生成过程。与方式（1）一样，也支持sort和styles的设定。<br />
+				（3）数据方式。通过由单纯的数据结构生成thead。由于可以每次都从数据中生成thead，所以可以支持动态列展示，同时可支持多层tr的情况，灵活性更好。
+			</td>
+		</tr>
+		<tr>
+			<td>dom方式</td>
+			<td>（可选）直接写在html页面中，只能支持静态列，如果每次查询的数据的列在变化，需要使用（2）或者（3）。</td>
+		</tr>
+		<tr>
+			<td>{headTemplate}</td>
+			<td>（可选）生成thead头的模板，支持静态表头和动态表头（需要headData支持），可支持多级结构。</td>
+		</tr>
+		<tr>
+			<td>{headData}</td>
+			<td>（可选）完全按照数据的格式生成thead的结构，可以支持多级tr生成。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+dom方式代码示例：
+<pre class="code">
+&lt;table id="theadDemo1" class="grid" width="100%"&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th rowspan="3" sort="depart" sortType="int" styles="width:150px;vertical-align:middle;"&gt;部门&lt;/th&gt;
+			&lt;th rowspan="3"&gt;地域&lt;/th&gt;
+			&lt;th colspan="4"&gt;数量统计&lt;/th&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;th colspan="2"&gt;PV&lt;/th&gt;
+			&lt;th colspan="2"&gt;UV&lt;/th&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;th styles="background:#ff0;color:#e72"&gt;男&lt;/th&gt;
+			&lt;th styles="background:#a56;color:#13e;"&gt;女&lt;/th&gt;
+			&lt;th styles="background:#ff0;color:#e72"&gt;男&lt;/th&gt;
+			&lt;th styles="background:#a56;color:#13e;"&gt;女&lt;/th&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;script&gt;
+(function(){
+	var getData = function(params){
+		var result = {
+			totalCount : 0
+		};
+		for(var k in params){
+		 	result[k] = params[k];
+		}
+		result.bodyData = []
+		return result;
+	};
+	var grid = Grid.init({
+		holder:'theadDemo1',
+		dataSource:getData,
+		nopage:true
+	});
+	grid.send();
+})();
+&lt;/script&gt;
+</pre>
+dom方式效果如下：
+<div style="width:100%;padding:10px;">
+<table id="theadDemo1" class="grid" width="100%">
+	<caption>dom方式</caption>
+	<thead>
+		<tr>
+			<th rowspan="3" sort="depart" sortType="int" styles="width:150px;vertical-align:middle;">部门</th>
+			<th rowspan="3">地域</th>
+			<th colspan="4">数量统计</th>
+		</tr>
+		<tr>
+			<th colspan="2">PV</th>
+			<th colspan="2">UV</th>
+		</tr>
+		<tr>
+			<th styles="background:#ff0;color:#e72">男</th>
+			<th styles="background:#a56;color:#13e;">女</th>
+			<th styles="background:#ff0;color:#e72">男</th>
+			<th styles="background:#a56;color:#13e;">女</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+<script>
+(function(){
+	var getData = function(params){
+		var result = {
+			totalCount : 0
+		};
+		for(var k in params){
+		 	result[k] = params[k];
+		}
+		result.bodyData = []
+		return result;
+	};
+	var grid = Grid.init({
+		holder:'theadDemo1',
+		dataSource:getData,
+		nopage:true
+	});
+	grid.send();
+})();
+</script>
+</div>
+模板方式代码示例：
+<pre class="code">
+&lt;table id="theadDemo2" class="grid" width="100%"&gt;
+	&lt;caption&gt;模板方式&lt;/caption&gt;
+	&lt;thead&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;script&gt;
+(function(){
+	var getData = function(params){
+		var result = {
+			totalCount : 0
+		};
+		for(var k in params){
+		 	result[k] = params[k];
+		}
+		return result;
+	};
+	var grid = Grid.init({
+		holder:'theadDemo2',
+		headTemplate:'&lt;tr&gt;&lt;th rowspan="3" sort="depart" sortType="int" styles="width:150px;vertical-align:middle;"&gt;部门&lt;/th&gt;&lt;th rowspan="3"&gt;地域&lt;/th&gt;&lt;th colspan="4"&gt;数量统计&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th colspan="2"&gt;PV&lt;/th&gt;<br/>&lt;th colspan="2"&gt;UV&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th styles="background:#ff0;color:#e72"&gt;男&lt;/th&gt;&lt;th styles="background:#a56;color:#13e;"&gt;女&lt;/th&gt;&lt;th styles="background:#ff0;color:#e72"&gt;男&lt;/th&gt;&lt;th styles="background:#a56;color:#13e;"&gt;女&lt;/th&gt;&lt;/tr&gt;',
+		dataSource:getData,
+		nopage:true
+	});
+	grid.send();
+})();
+&lt;/script&gt;
+</pre>
+模板方式效果如下：
+<div style="width:100%;padding:10px;">
+<table id="theadDemo2" class="grid" width="100%">
+	<caption>模板方式</caption>
+	<thead>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+<script>
+(function(){
+	var getData = function(params){
+		var result = {
+			totalCount : 0
+		};
+		for(var k in params){
+		 	result[k] = params[k];
+		}
+		return result;
+	};
+	var grid = Grid.init({
+		holder:'theadDemo2',
+		headTemplate:'<tr><th rowspan="3" sort="depart" sortType="int" styles="width:150px;vertical-align:middle;">部门</th><th rowspan="3">地域</th><th colspan="4">数量统计</th></tr><tr><th colspan="2">PV</th><th colspan="2">UV</th></tr><tr><th styles="background:#ff0;color:#e72">男</th><th styles="background:#a56;color:#13e;">女</th><th styles="background:#ff0;color:#e72">男</th><th styles="background:#a56;color:#13e;">女</th></tr>',
+		dataSource:getData,
+		nopage:true
+	});
+	grid.send();
+})();
+</script>
+</div>
+纯数据方式代码示例：
+<pre class="code">
+&lt;table id="theadDemo3" class="grid" width="100%"&gt;
+	&lt;caption&gt;纯数据方式&lt;/caption&gt;
+	&lt;thead&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;script&gt;
+(function(){
+	var headData = [
+			{text:"部门", sort:'depart', sortType:'character', styles:"width:150px;"},
+			"地域",
+			{text:"数量统计", childs:[
+			                {text:"PV", childs:[{text:"男", styles:"background:#ff0;color:#e72"},
+			    								{text:"女", styles:"background:#a56;color:#13e;"}]
+			                },
+			                {text:"UV", childs:[{text:"男", styles:"background:#ff0;color:#e72"},
+			    								{text:"女", styles:"background:#a56;color:#13e;"}]
+			                }
+			                ]
+			}  
+    	];
+	var getData = function(params){
+		var result = {
+			totalCount : 0,
+			headData:headData
+		};
+		for(var k in params){
+		 	result[k] = params[k];
+		}
+		return result;
+	};
+	var grid = Grid.init({
+		holder:'theadDemo3',
+		dataSource:getData,
+		nopage:true
+	});
+	grid.send();
+})();
+&lt;/script&gt;
+</pre>
+纯数据方式效果如下：
+<div style="width:100%;padding:10px;">
+<table id="theadDemo3" class="grid" width="100%">
+	<caption>纯数据方式</caption>
+	<thead>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+<script>
+(function(){
+	var headData = [
+			{text:"部门", sort:'depart', sortType:'character', styles:"width:150px;"},
+			"地域",
+			{text:"数量统计", childs:[
+			                {text:"PV", childs:[{text:"男", styles:"background:#ff0;color:#e72"},
+			    								{text:"女", styles:"background:#a56;color:#13e;"}]
+			                },
+			                {text:"UV", childs:[{text:"男", styles:"background:#ff0;color:#e72"},
+			    								{text:"女", styles:"background:#a56;color:#13e;"}]
+			                }
+			                ]
+			}  
+    ];
+	var getData = function(params){
+		var result = {
+			totalCount : 0,
+			headData:headData
+		};
+		for(var k in params){
+		 	result[k] = params[k];
+		}
+		return result;
+	};
+	var grid = Grid.init({
+		holder:'theadDemo3',
+		dataSource:getData,
+		nopage:true
+	});
+	grid.send();
+})();
+</script>
+</div>
+<div style="clear:both;"></div>
+<table class="note" style="width:100%">
+	<thead>
+		<tr>
+			<th width="20%" colspan="2">Options配置</th>
+			<th>使用说明</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td rowspan="3" style="vertical-align: middle;">tBody部分</td>
+			<td>body数据组织说明</td>
+			<td>body的数据填充必须依靠body模板，支持扁平式数据和层级式数据格式的解析；这两种数据都会按照模板声明的顺序渲染。
+			</td>
+		</tr>
+		<tr>
+			<td>{bodyTemplate}</td>
+			<td>（必填）可以在初始化Grid的时候传入init，或者在返回数据的json中设置。模板支持列数据合并、列数据可编辑及指定列为序号列（&lt;td&gt;[]&lt;/td&gt;表示）。其中模板中最强大的地方是可以绑定一个处理函数，此函数可以返回任何html代码片段，当需要对数据进行加工的时候，一般可以使用此方式解决，此函数需要以@开头，用以标记后边是一个函数。事例：bodyTemplate:'&lt;tr&gt;&lt;td&gt;[]&lt;/td&gt;&lt;td merge="true"&gt;{depart}&lt;/td&gt;&lt;td edit="region" &gt;{region}&lt;/td&gt;&lt;td&gt;@toType({type})&lt;/td&gt;&lt;/tr&gt;'</td>
+		</tr>
+		<tr>
+			<td>{bodyData}</td>
+			<td>（必填）用于填充body区的数据，可以是扁平式，也可以是层级式。当是层级式的数据结构时，程序默认识别的下层属性为childs，如果您传输的数据是其他字段，则可以设置mapKeys:{childs:'xxx'}</td>
+		</tr>
+	</tbody>
+</table>
+
+扁平数据格式代码示例：
+<pre class="code">
+	&lt;table id="tbodyDemo1" class="grid" width="100%"&gt;
+		&lt;thead&gt;
+			&lt;tr&gt;
+				&lt;th&gt;序号&lt;/th&gt;
+				&lt;th&gt;部门&lt;/th&gt;
+				&lt;th&gt;地区&lt;/th&gt;
+				&lt;th&gt;性别&lt;/th&gt;
+				&lt;th&gt;是否喜欢篮球&lt;/th&gt;
+			&lt;/tr&gt;
+		&lt;/thead&gt;
+		&lt;tbody&gt;&lt;/tbody&gt;
+	&lt;/table&gt;
+	&lt;script&gt;
+		(function(){
+			var totalData = [
+				{id:2, depart:"国务院直属特设机构", region:'上海', type:1, islike:1},
+				{id:4, depart:"国务院直属特设机构", region:'广州', type:1, islike:1},
+				{id:5, depart:"国务院直属特设机构", region:'深圳', type:0, islike:0},
+				{id:16, depart:"国务院直属特设机构", region:'北京', type:0, islike:1},
+				{id:7, depart:"国务院直属特设机构", region:'大连', type:1, islike:0},
+				{id:8, depart:"国务院部委管理的国家局", region:'重庆', type:1, islike:1},
+				{id:20, depart:"国务院部委管理的国家局", region:'沈阳', type:1, islike:0},
+				{id:21, depart:"国务院部委管理的国家局", region:'哈尔滨', type:0, islike:0},
+				{id:22, depart:"国务院部委管理的国家局", region:'天津', type:0, islike:1},
+				{id:23, depart:"国务院部委管理的国家局", region:'青岛', type:0, islike:1},
+				{id:24, depart:"国务院部委管理的国家局", region:'安徽', type:1, islike:0},
+				{id:25, depart:"国务院部委管理的国家局", region:'四川', type:1, islike:0}
+            		];
+            		//此函数是为了模拟后台的处理逻辑，而真实使用过程中，是没有此函数的，一般都是请求后台接口得到数据。
+			var getData = function(params){
+				var result = {
+					totalCount:totalData.length
+				};
+				var pageNo = params.pageNo;
+				var pageSize = params.pageSize;
+				var sort = params.orderBy;
+				var sortType = params.sortType;
+				var order = params.order;
+				var type = params.type;
+				if(sort){
+					  ArrayUtil.sortObj(totalData, sort, order, sortType);
+				  }
+				if(pageSize){
+					var from = (pageNo - 1) * pageSize;
+					var to = Math.min(from + pageSize, totalData.length);
+					var bodyData = [];
+					for(var i=from;i&lt;to;i++){
+					 	bodyData.push(totalData[i]);
+					}
+					result.bodyData = bodyData;
+				}else{
+					result.bodyData = totalData;
+				}
+				for(var k in params){
+				 	result[k] = params[k];
+				}
+				return result;
+			};
+			var grid = Grid.init({
+				holder:'tbodyDemo1',
+				bodyTemplate:'&lt;tr&gt;&lt;td&gt;[]&lt;/td&gt;&lt;td merge="true"&gt;{depart}&lt;/td&gt;&lt;td edit="region"&gt;{region}&lt;/td&gt;&lt;td&gt;@toType({type})&lt;/td&gt;&lt;td&gt;<br/>喜欢：&lt;input type="radio" name="like1{id}" @isLike({islike}, 1) /&gt;&nbsp;不喜欢：&lt;input type="radio" name="like1{id}" @isLike({islike}, 0) /&gt;&lt;/td&gt;&lt;/tr&gt;',
+				dataSource:getData,
+				pageSize:6
+			});
+			grid.send();
+		})();
+		function toType(type){
+			return type == '1' ? '男' : '女';
+		};
+		function isLike(islike, flg){
+			return islike == flg ? ' checked="checked" ' : ' ';
+		}
+	&lt;/script&gt;
+</pre>
+扁平式数据效果如下：
+<div style="width:100%;padding:10px;">
+	<table id="tbodyDemo1" class="grid" width="100%">
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th>部门</th>
+				<th>地区</th>
+				<th>性别</th>
+				<th>是否喜欢篮球</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+	<script>
+		(function(){
+			var totalData = [
+				{id:2, depart:"国务院直属特设机构", region:'上海', type:1, islike:1},
+				{id:4, depart:"国务院直属特设机构", region:'广州', type:1, islike:1},
+				{id:5, depart:"国务院直属特设机构", region:'深圳', type:0, islike:0},
+				{id:16, depart:"国务院直属特设机构", region:'北京', type:0, islike:1},
+				{id:7, depart:"国务院直属特设机构", region:'大连', type:1, islike:0},
+				{id:8, depart:"国务院部委管理的国家局", region:'重庆', type:1, islike:1},
+				{id:20, depart:"国务院部委管理的国家局", region:'沈阳', type:1, islike:0},
+				{id:21, depart:"国务院部委管理的国家局", region:'哈尔滨', type:0, islike:0},
+				{id:22, depart:"国务院部委管理的国家局", region:'天津', type:0, islike:1},
+				{id:23, depart:"国务院部委管理的国家局", region:'青岛', type:0, islike:1},
+				{id:24, depart:"国务院部委管理的国家局", region:'安徽', type:1, islike:0},
+				{id:25, depart:"国务院部委管理的国家局", region:'四川', type:1, islike:0}
+            ];
+			var getData = function(params){
+				var result = {
+					totalCount:totalData.length
+				};
+				var pageNo = params.pageNo;
+				var pageSize = params.pageSize;
+				var sort = params.orderBy;
+				var sortType = params.sortType;
+				var order = params.order;
+				var type = params.type;
+				if(sort){
+					  ArrayUtil.sortObj(totalData, sort, order, sortType);
+				  }
+				if(pageSize){
+					var from = (pageNo - 1) * pageSize;
+					var to = Math.min(from + pageSize, totalData.length);
+					var bodyData = [];
+					for(var i=from;i<to;i++){
+					 	bodyData.push(totalData[i]);
+					}
+					result.bodyData = bodyData;
+				}else{
+					result.bodyData = totalData;
+				}
+				for(var k in params){
+				 	result[k] = params[k];
+				}
+				return result;
+			};
+			var grid = Grid.init({
+				holder:'tbodyDemo1',
+				bodyTemplate:'<tr><td>[]</td><td merge="true">{depart}</td><td edit="region">{region}</td><td>@toType({type})</td><td>喜欢：<input type="radio" name="like1{id}" @isLike({islike}, 1) />&nbsp;不喜欢：<input type="radio" name="like1{id}" @isLike({islike}, 0) /></td></tr>',
+				dataSource:getData,
+				pageSize:6
+			});
+			grid.send();
+		})();
+		function toType(type){
+			return type == '1' ? '男' : '女';
+		};
+		function isLike(islike, flg){
+			return islike == flg ? ' checked="checked" ' : ' ';
+		}
+	</script>
+</div>
+层级结构数据代码示例：
+<pre class="code">
+	&lt;table id="tbodyDemo2" class="grid" width="100%"&gt;
+		&lt;thead&gt;
+			&lt;tr&gt;
+				&lt;th&gt;序号&lt;/th&gt;
+				&lt;th&gt;部门&lt;/th&gt;
+				&lt;th&gt;地区&lt;/th&gt;
+				&lt;th&gt;性别&lt;/th&gt;
+				&lt;th&gt;是否喜欢篮球&lt;/th&gt;
+			&lt;/tr&gt;
+		&lt;/thead&gt;
+		&lt;tbody&gt;&lt;/tbody&gt;
+	&lt;/table&gt;
+	&lt;script&gt;
+		(function(){
+			var totalData = [
+			    {
+			    	depart:"国务院直属特设机构", childs:[
+						{id:2,region:'上海', type:1, islike:1},
+						{id:4, region:'广州', type:1, islike:1},
+						{id:5, region:'深圳', type:0, islike:0},
+						{id:16, region:'北京', type:0, islike:1},
+						{id:7, region:'大连', type:1, islike:0}
+	    	                            ]
+			    },
+			    {
+			    	depart:"国务院部委管理的国家局", childs:[
+						{id:8, region:'重庆', type:1, islike:1},
+						{id:20, region:'沈阳', type:1, islike:0},
+						{id:21, region:'哈尔滨', type:0, islike:0},
+						{id:22, region:'天津', type:0, islike:1},
+						{id:23, region:'青岛', type:0, islike:1},
+						{id:24, region:'安徽', type:1, islike:0},
+						{id:25, region:'四川', type:1, islike:0}
+	    	                            ]
+			    }
+            		];
+			totalData = Grid.flatModel(totalData, 'childs');
+			var getData = function(params){
+				var result = {
+					totalCount:totalData.length
+				};
+				var pageNo = params.pageNo;
+				var pageSize = params.pageSize;
+				var sort = params.orderBy;
+				var sortType = params.sortType;
+				var order = params.order;
+				var type = params.type;
+				if(sort){
+					  ArrayUtil.sortObj(totalData, sort, order, sortType);
+				  }
+				if(pageSize){
+					var from = (pageNo - 1) * pageSize;
+					var to = Math.min(from + pageSize, totalData.length);
+					var bodyData = [];
+					for(var i=from;i&lt;to;i++){
+					 	bodyData.push(totalData[i]);
+					}
+					result.bodyData = bodyData;
+				}else{
+					result.bodyData = totalData;
+				}
+				for(var k in params){
+				 	result[k] = params[k];
+				}
+				return result;
+			};
+			var grid = Grid.init({
+				holder:'tbodyDemo2',
+				bodyTemplate:'&lt;tr&gt;&lt;td&gt;[]&lt;/td&gt;&lt;td merge="true"&gt;{depart}&lt;/td&gt;&lt;td edit="region"&gt;{region}&lt;/td&gt;&lt;td&gt;@toType({type})&lt;/td&gt;&lt;td&gt;<br/>喜欢：&lt;input type="radio" name="like{id}" @isLike({islike}, 1) /&gt;&nbsp;不喜欢：&lt;input type="radio" name="like{id}" @isLike({islike}, 0) /&gt;&lt;/td&gt;&lt;/tr&gt;',
+				dataSource:getData,
+				pageSize:6
+			});
+			grid.send();
+		})();
+	&lt;/script&gt;
+</pre>
+层级结构数据效果如下：
+<div style="width:100%;padding:10px;">
+	<table id="tbodyDemo2" class="grid" width="100%">
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th>部门sdagagddsd</th>
+				<th>地区dfasdgadsgddd</th>
+				<th>性3434343别</th>
+				<th>是否喜欢篮球</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+	<script>
+		(function(){
+			var totalData = [
+			    {
+			    	depart:"国务院直属特设机构", childs:[
+											{id:2,region:'上海', type:1, islike:1},
+											{id:4, region:'广州', type:1, islike:1},
+											{id:5, region:'深圳', type:0, islike:0},
+											{id:16, region:'北京', type:0, islike:1},
+											{id:7, region:'大连', type:1, islike:0}
+	    	                            ]
+			    },
+			    {
+			    	depart:"国务院部委管理的国家局", childs:[
+											{id:8, region:'重庆', type:1, islike:1},
+											{id:20, region:'沈阳', type:1, islike:0},
+											{id:21, region:'哈尔滨', type:0, islike:0},
+											{id:22, region:'天津', type:0, islike:1},
+											{id:23, region:'青岛', type:0, islike:1},
+											{id:24, region:'安徽', type:1, islike:0},
+											{id:25, region:'四川', type:1, islike:0}
+	    	                            ]
+			    }
+            ];
+			totalData = Grid.flatModel(totalData, 'childs');
+			var getData = function(params){
+				var result = {
+					totalCount:totalData.length
+				};
+				var pageNo = params.pageNo;
+				var pageSize = params.pageSize;
+				var sort = params.orderBy;
+				var sortType = params.sortType;
+				var order = params.order;
+				var type = params.type;
+				if(sort){
+					  ArrayUtil.sortObj(totalData, sort, order, sortType);
+				  }
+				if(pageSize){
+					var from = (pageNo - 1) * pageSize;
+					var to = Math.min(from + pageSize, totalData.length);
+					var bodyData = [];
+					for(var i=from;i<to;i++){
+					 	bodyData.push(totalData[i]);
+					}
+					result.bodyData = bodyData;
+				}else{
+					result.bodyData = totalData;
+				}
+				for(var k in params){
+				 	result[k] = params[k];
+				}
+				return result;
+			};
+			var grid = Grid.init({
+				holder:'tbodyDemo2',
+				bodyTemplate:'<tr><td>[]</td><td merge="true">{depart}</td><td edit="region">{region}</td><td>@toType({type})</td><td>喜欢：<input type="radio" name="like{id}" @isLike({islike}, 1) />&nbsp;不喜欢：<input type="radio" name="like{id}" @isLike({islike}, 0) /></td></tr>',
+				dataSource:getData,
+				pageSize:6
+			});
+			grid.send();
+		})();
+	</script>
+</div>
+综合实例代码：
+<pre class="code">
+
+</pre>
+<div class='demo row'>
+	<div class="col-sm-6">
+		<table id="demo3" style="width: 80%;margin:50px auto 10px auto">
+			<thead></thead>
+			<tbody></tbody>
+		</table>
+		<script>
+			(function(){
+				var totalData = [
+					{id:2, depart:"国务院直属特设机构", region:'上海', male1:100, female1:2323, male2:10, female2:223},
+					{id:4, depart:"国务院直属特设机构", region:'广州', male1:120, female1:2323, male2:10, female2:233},
+					{id:5, depart:"国务院直属特设机构", region:'深圳', male1:134, female1:1212, male2:13, female2:122},
+					{id:16, depart:"国务院直属特设机构", region:'北京', male1:112, female1:2133, male2:12, female2:213},
+					{id:7, depart:"国务院直属特设机构", region:'大连', male1:3234, female1:2332, male2:324, female2:232},
+					{id:8, depart:"国务院部委管理的国家局", region:'重庆', male1:3434, female1:2332, male2:344, female2:232},
+					{id:20, depart:"国务院部委管理的国家局", region:'沈阳', male1:4545, female1:3233, male2:454, female2:333},
+					{id:21, depart:"国务院部委管理的国家局", region:'哈尔滨', male1:4554, female1:2221, male2:554, female2:221},
+					{id:22, depart:"国务院部委管理的国家局", region:'天津', male1:333, female1:2122, male2:33, female2:212},
+					{id:23, depart:"国务院部委管理的国家局", region:'青岛', male1:556, female1:3223, male2:56, female2:323},
+					{id:24, depart:"国务院部委管理的国家局", region:'安徽', male1:1212, female1:221, male2:112, female2:21},
+					{id:25, depart:"国务院部委管理的国家局", region:'四川rgaregegar', male1:34434, female1:2332, male2:3434, female2:332}
+	            ];
+				var headData = [
+					{text:"id", styles:"width:75px;"},
+					{text:"部门", sort:'depart', sortType:'character'},
+					"地域zhongbubgubrg",
+					{text:"数量统计", childs:[
+				                    {text:"PV", childs:[{text:"男", styles:"background:#ff0;color:#e72"},
+				        								{text:"女", styles:"background:#a56;color:#13e;"}]
+				                    },
+				                    {text:"UV", childs:[{text:"男", styles:"background:#ff0;color:#e72"},
+				        								{text:"女", styles:"background:#a56;color:#13e;"}]
+				                    }
+				                    ]
+					}
+						
+	            ];
+				var getData = function(params){
+					var result = {
+						totalCount:totalData.length
+					};
+					var pageNo = params.pageNo;
+					var pageSize = params.pageSize;
+					var sort = params.orderBy;
+					var sortType = params.sortType;
+					var order = params.order;
+					var type = params.type;
+					if(sort){
+						  ArrayUtil.sortObj(totalData, sort, order, sortType);
+					  }
+					if(pageSize){
+						var from = (pageNo - 1) * pageSize;
+						var to = Math.min(from + pageSize, totalData.length);
+						var bodyData = [];
+						for(var i=from;i<to;i++){
+						 	bodyData.push(totalData[i]);
+						}
+						result.bodyData = bodyData;
+					}else{
+						result.bodyData = totalData;
+					}
+					result.headData = headData;
+					for(var k in params){
+					 	result[k] = params[k];
+					}
+					return result;
+				};
+				var grid = Grid.init({
+					holder:'demo3',
+					bodyTemplate:'<tr><td>{id}</td><td merge="true">{depart}</td><td>{region}</td><td edit="male1">{male1}</td><td>{female1}</td><td>{male2}</td><td>{female2}</td></tr>',
+					dataSource:getData,
+					order:'desc',
+					orderBy:'id',
+					sortType:'int',
+					pageSize:6
+				});
+				grid.onedited = function(node, type, oldVal, newVal){
+					alert('old:' + oldVal + ",new:" + newVal);
+				}
+				grid.beforeSend = function(){console.log('before send，可以在这里处理下数据整理工作')};
+				grid.onfilled = function(data){console.log('表格数据渲染完成。您可以在此处理其他事件')};
+				grid.modifyModel = function(model){console.log(model);};
+				grid.onrowed = function(tr, data){console.log(tr, data)};
+				grid.oncolumned = function(tdOrth, data){console.log(tdOrth, data)};
+				grid.onellipsised = function(node){console.log(node)};
+				grid.send();
+			})();
+			function checkType(type){
+				return type == '1' ? ' checked="checked" ' : ' ';
+			}
+		</script>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+﻿.grid {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.42857;
+	color: #333333;
+	border-collapse: collapse;
+	border-spacing: 0;
+	table-layout: fixed;
+}
+.trid tr{
+	line-height: 1.42857;
+}
+.grid th{
+	border: 1px solid #dddddd;
+	padding: 8px;
+	line-height: 1.42857;
+	white-space: nowrap;
+}
+.grid td{
+	padding: 8px;
+	line-height: 1.42857;
+	vertical-align: top;
+	border: 1px solid #dddddd;
+	border-top: 1px solid #dddddd;
+	white-space: nowrap;
+}
+.ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.sort-asc {
+    background:url('img/up.png')  center center no-repeat;
+    padding:0 6px;
+    cursor:pointer;
+}
+.sort-desc {
+    background:url('img/down.png')  center center no-repeat;
+    padding:0 6px;
+    cursor:pointer;
+}
+.sort-default {
+    background:url('img/sort.png') center center no-repeat;
+    padding:0 6px;
+    cursor:pointer;
+}
+.zebra-even {
+	background-color: #f9f9f9;
+}
+.mouseover {
+	background: #DDF0FF;
+}
+div.page-node input.page-bt{
+	display: inline-block;
+	padding: 2px 12px;
+	margin-bottom: 5px;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 1.42857;
+	text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+div.page-node input.some-page{
+	width: 34px;
+	height: 20px;
+	padding: 0px 6px;
+	margin-bottom: 4px;
+	font-size: 12px;
+	line-height: 1.42857;
+	color: #555555;
+	vertical-align: middle;
+	background-color: white;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+div.page-node{
+	text-align: center;
+	height:30px;
+	line-height:30px;
+}
+div.page-node input.bt-dis{
+	cursor: not-allowed;
+}
+.grid .edit-node{
+	outline:none;
+	height:100%;
+	width:100%;
+	padding:0px;
+	margin:0px;
+	border:0;
+}
+div.page-node input.page-active{
+	background-color: #60605F;
+	color: #FFFFFF;
+	border:none;
+}
