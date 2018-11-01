@@ -16,3 +16,6 @@
 	+ datetimerangepciker
 	  
 	  > 说明见：[daterangepicker 使用方法以及各种小bug修复](https://www.jianshu.com/p/0d24c3d26bc9)
+* 自己写的jquery插件
+
+	+ inputdownauto： 应用于比较简单的输入框可实现下拉列表的功能，且可以自动提示

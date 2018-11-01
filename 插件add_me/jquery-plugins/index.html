@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>plugins-test</title>
+    <link rel="stylesheet" href="inputdownauto/style.css">
+    <script src="inputdownauto/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="inputdownauto/inputdownauto.js"></script>
+<body>
+    <input type="text" id="searchInput">
+    <script>
+        var datas = ['1adf111111', '2fav22222', '33efe33333', 'dhaioh22', '12davvv'];
+        var datas1 = [
+            {val: 'dffafafefewf'},
+            {val: '342df4fdfee'},
+            {val: 'fdabrtrjyjtyj'},
+            {val: '56346246ghdfdh'},
+            {val: '35235fgdfg'}
+        ]
+        var datas2 = `<ul>
+            <li>obdad33obobobo</li>
+            <li>ob32535325obobo</li>
+            <li>obo245453bobo</li>
+            <li>obobob11111bo</li>
+            <li>obobo23535325bo</li>
+        </ul>`;
+        $('#searchInput').inputdownauto({
+            data: datas2,
+            key: 'val',
+            autoCompleteShow: true,
+            blankShow: true
+        });    
+    </script>
+</body>
+</html>
